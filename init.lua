@@ -305,8 +305,8 @@ require("lazy").setup({
 			local ui = require("harpoon.ui")
 			local term = require("harpoon.term")
 
-			vim.keymap.set("n", "<leader>dm", mark.add_file, { desc = "Harpoon: Add file" })
-			vim.keymap.set("n", "<leader>de", ui.toggle_quick_menu, { desc = "Harpoon: Toggle quick menu" })
+			vim.keymap.set("n", "<leader>mf", mark.add_file, { desc = "Harpoon: [m]ark [f]ile" })
+			vim.keymap.set("n", "<leader>me", ui.toggle_quick_menu, { desc = "Harpoon: [me]nu" })
 			vim.keymap.set("n", "<leader>1", function()
 				ui.nav_file(1)
 			end, { desc = "Harpoon: file 1" })
@@ -748,7 +748,9 @@ require("lazy").setup({
 			cmdline = {
 				completion = {
 					menu = {
-						auto_show = true,
+						auto_show = function()
+							return vim.fn.getcmdtype() == ":"
+						end,
 					},
 				},
 			},
