@@ -40,9 +40,9 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-	vim.opt.clipboard = "unnamedplus"
-end)
+-- vim.schedule(function()
+-- 	vim.opt.clipboard = "unnamedplus"
+-- end)
 
 -- vim.g.neovide_position_animation_length = 0
 -- vim.g.neovide_cursor_animation_length = 0.00
@@ -219,18 +219,71 @@ require("lazy").setup({
 	-- See `:help gitsigns` to understand what the configuration keys do
 
 	{
+		"Bekaboo/dropbar.nvim",
+		dependencies = {
+			"nvim-telescope/telescope-fzf-native.nvim",
+			build = "make",
+		},
+		config = function()
+			require("dropbar").setup({
+				bar = {
+					pick = {
+						pivots = "sadflewcmpghio",
+					},
+					truncate = true,
+				},
+			})
+
+			local dropbar_api = require("dropbar.api")
+			vim.keymap.set("n", "<Leader>dr", dropbar_api.pick, { desc = "Pick symbols in winbar" })
+		end,
+	},
+
+	-- {
+	-- 	"nvim-treesitter/nvim-treesitter-context",
+	-- 	opts = {
+	-- 		enable = true, -- Enable this plugin (can be toggled later via commands)
+	-- 		multiwindow = true, -- Enable multiwindow support
+	-- 		max_lines = 2, -- No limit on the number of context lines
+	-- 		min_window_height = 0, -- No minimum window height required to show context
+	-- 		line_numbers = true, -- Show line numbers in context
+	-- 		multiline_threshold = 10, -- Max lines for a single context
+	-- 		trim_scope = "inner", -- Trim outer context if max_lines is exceeded
+	-- 		mode = "topline", -- Context based on cursor position
+	-- 		separator = nil, -- No separator between context and content
+	-- 		zindex = 20, -- Z-index of the context window
+	-- 		on_attach = nil, -- Optional: return false to disable attaching for certain buffers
+	-- 	},
+	-- },
+
+	-- soft/hardwrap on writing
+	{ "preservim/vim-pencil" },
+
+	-- fixes unnamedplus lag
+	{
+		"EtiamNullam/deferred-clipboard.nvim",
+		config = function()
+			require("deferred-clipboard").setup()
+		end,
+	},
+
+	-- switch buffers quickly
+	{
 		"leath-dub/snipe.nvim",
 		keys = {
 			{
-				"X",
+				"<BS>",
 				function()
 					require("snipe").open_buffer_menu()
 				end,
 				desc = "Open Snipe buffer menu",
 			},
 		},
-		opts = {},
+		opts = {
+			sort = "last",
+		},
 	},
+
 	{
 		"chomosuke/typst-preview.nvim",
 		lazy = false, -- or ft = 'typst'
@@ -241,7 +294,7 @@ require("lazy").setup({
 	{ "lark-parser/vim-lark-syntax" },
 
 	-- easier motion through camelCase
-	{ "chaoren/vim-wordmotion" },
+	-- { "chaoren/vim-wordmotion" },
 
 	{
 		"ThePrimeagen/harpoon",
@@ -285,39 +338,39 @@ require("lazy").setup({
 			set({ "n", "x" }, "<down>", function()
 				mc.lineAddCursor(1)
 			end)
-			set({ "n", "x" }, "<leader><up>", function()
-				mc.lineSkipCursor(-1)
-			end)
-			set({ "n", "x" }, "<leader><down>", function()
-				mc.lineSkipCursor(1)
-			end)
+			-- set({ "n", "x" }, "<leader><up>", function()
+			-- 	mc.lineSkipCursor(-1)
+			-- end)
+			-- set({ "n", "x" }, "<leader><down>", function()
+			-- 	mc.lineSkipCursor(1)
+			-- end)
 
 			-- Add or skip adding a new cursor by matching word/selection
 			set({ "n", "x" }, "<C-n>", function()
 				mc.matchAddCursor(1)
-			end)
-			set({ "n", "x" }, "<leader>ms", function()
-				mc.matchSkipCursor(1)
-			end)
+			end, { desc = "Add cursor matching word, next" })
+			-- set({ "n", "x" }, "<leader>ms", function()
+			-- 	mc.matchSkipCursor(1)
+			-- end)
 			set({ "n", "x" }, "<C-p>", function()
 				mc.matchAddCursor(-1)
-			end)
-			set({ "n", "x" }, "<leader>mS", function()
-				mc.matchSkipCursor(-1)
-			end)
+			end, { desc = "Add cursor matching word, prev" })
+			-- set({ "n", "x" }, "<leader>mS", function()
+			-- 	mc.matchSkipCursor(-1)
+			-- end)
 
 			-- In normal/visual mode, press `mwap` will create a cursor in every match of
 			-- the word captured by `iw` (or visually selected range) inside the bigger
 			-- range specified by `ap`. Useful to replace a word inside a function, e.g. mwif.
-			set({ "n", "x" }, "mw", function()
-				mc.operator({ motion = "iw", visual = true })
-				-- Or you can pass a pattern, press `mwi{` will select every \w,
-				-- basically every char in a `{ a, b, c, d }`.
-				-- mc.operator({ pattern = [[\<\w]] })
-			end)
+			-- set({ "n", "x" }, "mw", function()
+			-- 	mc.operator({ motion = "iw", visual = true })
+			-- 	-- Or you can pass a pattern, press `mwi{` will select every \w,
+			-- 	-- basically every char in a `{ a, b, c, d }`.
+			-- 	-- mc.operator({ pattern = [[\<\w]] })
+			-- end)
 
-			-- Press `mWi"ap` will create a cursor in every match of string captured by `i"` inside range `ap`.
-			set("n", "mW", mc.operator)
+			-- -- Press `mWi"ap` will create a cursor in every match of string captured by `i"` inside range `ap`.
+			-- set("n", "mW", mc.operator)
 
 			-- -- Add all matches in the document
 			-- set({ "n", "x" }, "<leader>A", mc.matchAllAddCursors)
@@ -331,8 +384,8 @@ require("lazy").setup({
 			-- end)
 
 			-- Rotate the main cursor.
-			set({ "n", "x" }, "<left>", mc.nextCursor)
-			set({ "n", "x" }, "<right>", mc.prevCursor)
+			set({ "n", "x" }, "<left>", mc.nextCursor, { desc = "Rotate to next cursor" })
+			set({ "n", "x" }, "<right>", mc.prevCursor, { desc = "Rotate to previous cursor" })
 
 			-- -- Delete the main cursor.
 			-- set({ "n", "x" }, "<leader>mx", mc.deleteCursor)
@@ -343,10 +396,10 @@ require("lazy").setup({
 			set("n", "<c-leftrelease>", mc.handleMouseRelease)
 
 			-- Easy way to add and remove cursors using the main cursor.
-			set({ "n", "x" }, "<leader>mx", mc.toggleCursor)
+			set({ "n", "x" }, "<leader>cx", mc.toggleCursor, { desc = "Toggle cursor at current position" })
 
-			-- Clone every cursor and disable the originals.
-			set({ "n", "x" }, "<leader>mc", mc.duplicateCursors)
+			-- -- Clone every cursor and disable the originals.
+			-- set({ "n", "x" }, "<leader>mc", mc.duplicateCursors)
 
 			set("n", "<esc>", function()
 				if not mc.cursorsEnabled() then
@@ -360,10 +413,10 @@ require("lazy").setup({
 			end)
 
 			-- bring back cursors if you accidentally clear them
-			set("n", "<leader>mr", mc.restoreCursors)
+			set("n", "<leader>cr", mc.restoreCursors, { desc = "Restore previously cleared cursors" })
 
 			-- Align cursor columns.
-			set("n", "<leader>ma", mc.alignCursors)
+			set("n", "<leader>ca", mc.alignCursors, { desc = "Align all cursor columns" })
 
 			-- -- Split visual selections by regex.
 			-- set("x", "S", mc.splitCursors)
@@ -426,11 +479,20 @@ require("lazy").setup({
 	{
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
-		config = true,
 		opts = {
 			check_ts = true,
+			map_cr = false,
 		},
-		-- this is equivalent to setup({}) function
+		config = function(_, opts)
+			require("nvim-autopairs").setup(opts)
+			-- rebinds enter with the autoindenting deleting whitespace fix
+			vim.api.nvim_set_keymap(
+				"i",
+				"<CR>",
+				[[v:lua.require'nvim-autopairs'.completion_confirm() .. '<Space><BS>']],
+				{ expr = true, noremap = true }
+			)
+		end,
 	},
 	{
 		"mrcjkb/rustaceanvim",
@@ -646,14 +708,69 @@ require("lazy").setup({
 		---@type render.md.UserConfig
 		opts = {},
 	},
+
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		build = "cd app && npm install",
+		init = function()
+			vim.g.mkdp_filetypes = { "markdown" }
+		end,
+		ft = { "markdown" },
+	},
 	{
 		"numToStr/Comment.nvim",
 		opts = {}, -- Use default configuration
 	},
+
 	{
-		"hrsh7th/cmp-nvim-lsp-signature-help",
-		dependencies = { "hrsh7th/nvim-cmp" },
+		"saghen/blink.compat",
+		-- use the latest release, via version = '*', if you also use the latest release for blink.cmp
+		version = "*",
+		-- lazy.nvim will automatically load the plugin when it's required by blink.cmp
+		lazy = true,
+		-- make sure to set opts so that lazy.nvim calls blink.compat's setup
+		opts = {},
 	},
+	{
+		"saghen/blink.cmp",
+		lazy = true,
+		version = "*",
+		---@module 'blink.cmp'
+		---@type blink.cmp.Config
+		opts = {
+			keymap = {
+				preset = "default",
+				["<C-e>"] = { "hide" },
+				["<C-Space>"] = { "show" },
+				["<C-y>"] = { "accept" }, -- accept completion
+			},
+			cmdline = {
+				completion = {
+					menu = {
+						auto_show = true,
+					},
+				},
+			},
+			completion = {
+				documentation = {
+					auto_show = true,
+					auto_show_delay_ms = 500,
+				},
+			},
+			signature = { enabled = true },
+			appearance = {
+				use_nvim_cmp_as_default = true,
+				nerd_font_variant = "normal",
+			},
+
+			sources = {
+				default = { "lsp", "path", "snippets", "buffer", "omni" },
+			},
+		},
+		opts_extend = { "sources.default" },
+	},
+
 	-- NOTE: Plugins can also be configured to run Lua code when they are loaded.
 	--
 	-- This is often very useful to both group configuration, as well as handle
@@ -841,7 +958,7 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
+			vim.keymap.set("n", "<leader>st", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
 			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 			vim.keymap.set("n", "<leader>sg", function()
 				require("telescope").extensions.live_grep_args.live_grep_args()
@@ -937,7 +1054,7 @@ require("lazy").setup({
 			-- { "j-hui/fidget.nvim", opts = {} },
 
 			-- Allows extra capabilities provided by nvim-cmp
-			"hrsh7th/cmp-nvim-lsp",
+			"saghen/blink.cmp",
 		},
 		config = function()
 			-- Brief aside: **What is LSP?**
@@ -1099,7 +1216,6 @@ require("lazy").setup({
 			--  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
 			--  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 			-- Enable the following language servers
 			--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -1256,125 +1372,6 @@ require("lazy").setup({
 			},
 		},
 	},
-
-	{ -- Autocompletion
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			-- Snippet Engine & its associated nvim-cmp source
-			{
-				"L3MON4D3/LuaSnip",
-				build = (function()
-					-- Build Step is needed for regex support in snippets.
-					-- This step is not supported in many windows environments.
-					-- Remove the below condition to re-enable on windows.
-					if vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0 then
-						return
-					end
-					return "make install_jsregexp"
-				end)(),
-				dependencies = {
-					-- `friendly-snippets` contains a variety of premade snippets.
-					--    See the README about individual language/framework/plugin snippets:
-					--    https://github.com/rafamadriz/friendly-snippets
-					-- {
-					--   'rafamadriz/friendly-snippets',
-					--   config = function()
-					--     require('luasnip.loaders.from_vscode').lazy_load()
-					--   end,
-					-- },
-				},
-			},
-			"saadparwaiz1/cmp_luasnip",
-
-			-- Adds other completion capabilities.
-			--  nvim-cmp does not ship with all sources by default. They are split
-			--  into multiple repos for maintenance purposes.
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-path",
-		},
-		config = function()
-			-- See `:help cmp`
-			local cmp = require("cmp")
-			local luasnip = require("luasnip")
-			luasnip.config.setup({})
-
-			cmp.setup({
-				snippet = {
-					expand = function(args)
-						luasnip.lsp_expand(args.body)
-					end,
-				},
-				completion = { completeopt = "menu,menuone,noinsert" },
-
-				-- For an understanding of why these mappings were
-				-- chosen, you will need to read `:help ins-completion`
-				--
-				-- No, but seriously. Please read `:help ins-completion`, it is really good!
-				mapping = cmp.mapping.preset.insert({
-					-- Select the [n]ext item
-					["<C-n>"] = cmp.mapping.select_next_item(),
-					-- Select the [p]revious item
-					["<C-p>"] = cmp.mapping.select_prev_item(),
-
-					-- Scroll the documentation window [b]ack / [f]orward
-					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
-
-					-- Accept ([y]es) the completion.
-					--  This will auto-import if your LSP supports it.
-					--  This will expand snippets if the LSP sent a snippet.
-					["<C-y>"] = cmp.mapping.confirm({ select = true }),
-
-					-- If you prefer more traditional completion keymaps,
-					-- you can uncomment the following lines
-					--['<CR>'] = cmp.mapping.confirm { select = true },
-					--['<Tab>'] = cmp.mapping.select_next_item(),
-					--['<S-Tab>'] = cmp.mapping.select_prev_item(),
-
-					-- Manually trigger a completion from nvim-cmp.
-					--  Generally you don't need this, because nvim-cmp will display
-					--  completions whenever it has completion options available.
-					["<C-Space>"] = cmp.mapping.complete({}),
-
-					-- Think of <c-l> as moving to the right of your snippet expansion.
-					--  So if you have a snippet that's like:
-					--  function $name($args)
-					--    $body
-					--  end
-					--
-					-- <c-l> will move you to the right of each of the expansion locations.
-					-- <c-h> is similar, except moving you backwards.
-					["<C-l>"] = cmp.mapping(function()
-						if luasnip.expand_or_locally_jumpable() then
-							luasnip.expand_or_jump()
-						end
-					end, { "i", "s" }),
-					["<C-h>"] = cmp.mapping(function()
-						if luasnip.locally_jumpable(-1) then
-							luasnip.jump(-1)
-						end
-					end, { "i", "s" }),
-
-					-- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-					--    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-				}),
-				sources = {
-					{
-						name = "lazydev",
-						-- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
-						group_index = 0,
-					},
-					{ name = "nvim_lsp" },
-					{ name = "nvim_lsp_signature_help" },
-					{ name = "luasnip" },
-					{ name = "path" },
-					{ name = "vim-dadbod-completion" },
-				},
-			})
-		end,
-	},
-
 	{ -- You can easily change to a different colorscheme.
 		-- Change the name of the colorscheme plugin below, and then
 		-- change the command in the config to whatever the name of that colorscheme is.
@@ -1386,7 +1383,7 @@ require("lazy").setup({
 			-- Load the colorscheme here.
 			-- Like many other themes, this one has different styles, and you could load
 			-- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-			vim.cmd.colorscheme("dayfox")
+			vim.cmd.colorscheme("dawnfox")
 
 			-- You can configure highlights by doing something like:
 			vim.cmd.hi("Comment gui=none")
@@ -1438,7 +1435,11 @@ require("lazy").setup({
 			-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
 			-- - sd'   - [S]urround [D]elete [']quotes
 			-- - sr)'  - [S]urround [R]eplace [)] [']
-			require("mini.surround").setup()
+			require("mini.surround").setup({
+				mappings = {
+					add = "s",
+				},
+			})
 
 			require("mini.bracketed").setup()
 			-- Simple and easy statusline.
