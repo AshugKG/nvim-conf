@@ -117,6 +117,20 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
+-- Vim project based (START)
+vim.opt.exrc = true
+vim.opt.secure = true
+local workspace_path = vim.fn.getcwd()
+local cache_dir = vim.fn.stdpath("data")
+local project_name = vim.fn.fnamemodify(workspace_path, ":t")
+local project_dir = cache_dir .. "/myshada/" .. project_name
+if vim.fn.isdirectory(project_dir) == 0 then
+	vim.fn.mkdir(project_dir, "p")
+end
+local shadafile = project_dir .. "/" .. vim.fn.sha256(workspace_path):sub(1, 8) .. ".shada"
+vim.opt.shadafile = shadafile
+-- Vim project based (END)
+
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
@@ -296,31 +310,31 @@ require("lazy").setup({
 	-- easier motion through camelCase
 	-- { "chaoren/vim-wordmotion" },
 
-	{
-		"ThePrimeagen/harpoon",
-		dependencies = { "nvim-lua/plenary.nvim" },
-		config = function()
-			require("harpoon").setup()
-			local mark = require("harpoon.mark")
-			local ui = require("harpoon.ui")
-			local term = require("harpoon.term")
-
-			vim.keymap.set("n", "<leader>mf", mark.add_file, { desc = "Harpoon: [m]ark [f]ile" })
-			vim.keymap.set("n", "<leader>me", ui.toggle_quick_menu, { desc = "Harpoon: [me]nu" })
-			vim.keymap.set("n", "<leader>1", function()
-				ui.nav_file(1)
-			end, { desc = "Harpoon: file 1" })
-			vim.keymap.set("n", "<leader>2", function()
-				ui.nav_file(2)
-			end, { desc = "Harpoon: file 2" })
-			vim.keymap.set("n", "<leader>3", function()
-				ui.nav_file(3)
-			end, { desc = "Harpoon: file 3" })
-			vim.keymap.set("n", "<leader>4", function()
-				ui.nav_file(4)
-			end, { desc = "Harpoon: file 4" })
-		end,
-	},
+	-- {
+	-- 	"ThePrimeagen/harpoon",
+	-- 	dependencies = { "nvim-lua/plenary.nvim" },
+	-- 	config = function()
+	-- 		require("harpoon").setup()
+	-- 		local mark = require("harpoon.mark")
+	-- 		local ui = require("harpoon.ui")
+	-- 		local term = require("harpoon.term")
+	--
+	-- 		vim.keymap.set("n", "<leader>mf", mark.add_file, { desc = "Harpoon: [m]ark [f]ile" })
+	-- 		vim.keymap.set("n", "<leader>me", ui.toggle_quick_menu, { desc = "Harpoon: [me]nu" })
+	-- 		vim.keymap.set("n", "<leader>1", function()
+	-- 			ui.nav_file(1)
+	-- 		end, { desc = "Harpoon: file 1" })
+	-- 		vim.keymap.set("n", "<leader>2", function()
+	-- 			ui.nav_file(2)
+	-- 		end, { desc = "Harpoon: file 2" })
+	-- 		vim.keymap.set("n", "<leader>3", function()
+	-- 			ui.nav_file(3)
+	-- 		end, { desc = "Harpoon: file 3" })
+	-- 		vim.keymap.set("n", "<leader>4", function()
+	-- 			ui.nav_file(4)
+	-- 		end, { desc = "Harpoon: file 4" })
+	-- 	end,
+	-- },
 	{ -- Commented until i figure our nohlsearch
 		"jake-stewart/multicursor.nvim",
 		branch = "1.0",
