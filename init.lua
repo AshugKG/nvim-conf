@@ -40,9 +40,9 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
--- vim.schedule(function()
--- 	vim.opt.clipboard = "unnamedplus"
--- end)
+vim.schedule(function()
+	vim.opt.clipboard = "unnamedplus"
+end)
 
 -- vim.g.neovide_position_animation_length = 0
 -- vim.g.neovide_cursor_animation_length = 0.00
@@ -271,15 +271,17 @@ require("lazy").setup({
 	-- },
 
 	-- soft/hardwrap on writing
-	{ "preservim/vim-pencil" },
-
-	-- fixes unnamedplus lag
 	{
-		"EtiamNullam/deferred-clipboard.nvim",
-		config = function()
-			require("deferred-clipboard").setup()
-		end,
+		"preservim/vim-pencil",
 	},
+
+	-- fixes unnamedplus lag -- Seems to not support tmux
+	-- {
+	-- 	"EtiamNullam/deferred-clipboard.nvim",
+	-- 	config = function()
+	-- 		require("deferred-clipboard").setup()
+	-- 	end,
+	-- },
 
 	-- switch buffers quickly
 	{
