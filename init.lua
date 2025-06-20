@@ -696,34 +696,34 @@ require("lazy").setup({
 	-- },
 
 	-- Leetcode
-	{
-		"kawre/leetcode.nvim",
-		build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
-		dependencies = {
-			"nvim-telescope/telescope.nvim",
-			-- "ibhagwan/fzf-lua",
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-		},
-		opts = {
-			lang = "python3",
-			image_support = false, -- wrap issue
-			theme = {
-				["normal"] = {
-					fg = "#3b3b3b",
-				},
-			},
-		},
-	},
-	{
-		"MeanderingProgrammer/render-markdown.nvim",
-		dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-		---@module 'render-markdown'
-		---@type render.md.UserConfig
-		opts = {},
-	},
+	-- {
+	-- 	"kawre/leetcode.nvim",
+	-- 	build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
+	-- 	dependencies = {
+	-- 		"nvim-telescope/telescope.nvim",
+	-- 		-- "ibhagwan/fzf-lua",
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"MunifTanjim/nui.nvim",
+	-- 	},
+	-- 	opts = {
+	-- 		lang = "python3",
+	-- 		image_support = false, -- wrap issue
+	-- 		theme = {
+	-- 			["normal"] = {
+	-- 				fg = "#3b3b3b",
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
+	-- {
+	-- 	"MeanderingProgrammer/render-markdown.nvim",
+	-- 	dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+	-- 	-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+	-- 	-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+	-- 	---@module 'render-markdown'
+	-- 	---@type render.md.UserConfig
+	-- 	opts = {},
+	-- },
 
 	{
 		"iamcco/markdown-preview.nvim",
