@@ -91,15 +91,14 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 
 -- Vim project based (START)
 vim.opt.exrc = true
-vim.opt.secure = true
 local workspace_path = vim.fn.getcwd()
 local cache_dir = vim.fn.stdpath("data")
 local project_name = vim.fn.fnamemodify(workspace_path, ":t")
-local project_dir = cache_dir .. "/myshada/" .. project_name
+local project_dir = vim.fs.joinpath(cache_dir, "myshada", project_name)
 if vim.fn.isdirectory(project_dir) == 0 then
 	vim.fn.mkdir(project_dir, "p")
 end
-local shadafile = project_dir .. "/" .. vim.fn.sha256(workspace_path):sub(1, 8) .. ".shada"
+local shadafile = vim.fs.joinpath(project_dir, vim.fn.sha256(workspace_path):sub(1, 8) .. ".shada")
 vim.opt.shadafile = shadafile
 -- Vim project based (END)
 
@@ -151,8 +150,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+local lazypath = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "lazy.nvim")
+if not vim.uv.fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
 	if vim.v.shell_error ~= 0 then
